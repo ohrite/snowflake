@@ -1,14 +1,19 @@
 . spec/spec_helper.sh
 
-describe "core/module"
+describe "module"
+
+it_sets_a_MODULE_ROOT () {
+  test "$MODULE_ROOT" != ""
+}
 
 it_has_no_modules_when_starting () {
-  test "$MODULES" = ""
+  test -z "$current_modules"
 }
 
 it_can_depend_on_a_module () {
   module depends core/log
-  test "$MODULES" = "core/log "
+  current_modules=`module list`
+  test "$current_modules" = "core/log"
 }
 
 it_does_not_expose_internal_functions () {
@@ -18,8 +23,14 @@ it_does_not_expose_internal_functions () {
   done
 }
 
-it_does_not_import_a_module_twice () {
-  module depends core/log
-  module depends core/log
-  test "$MODULES" = "core/log "
+it_does_not_depend_on_a_module_twice () {
+  module depends core/log core/log
+  current_modules=`module list`
+  test "$current_modules" = "core/log"
+}
+
+it_does_not_depend_on_a_nonexistent_module () {
+  module depends total_junk
+  current_modules=`module list`
+  test -z "$current_modules"
 }

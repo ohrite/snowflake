@@ -1,13 +1,16 @@
-if [ -z "$MODULES_ROOT" ]
-then  
-  MODULES_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-fi
-
 MODULES=
+
+if [ -z "$MODULE_ROOT" ]
+then
+  MODULE_ROOT=`cd $(dirname $0) && pwd`
+fi
 
 module () {
   add_dependency () {
-    MODULES="$MODULES$1 "
+    if [ -e "$MODULE_ROOT/$1.sh" ]
+    then
+      MODULES="$MODULES$1 "
+    fi
   }
 
   dependency_fits () {
@@ -31,6 +34,9 @@ module () {
   }
 
   case "$1" in
+    list)
+      echo $MODULES
+      ;;
     depends)
       shift
       module_depends $@
