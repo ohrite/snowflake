@@ -17,7 +17,7 @@ esh () {
   }
 
   template_result () {
-    eval echo "`inspect_template $1`"
+    eval echo `inspect_template $1`
   }
 
   case "$1" in

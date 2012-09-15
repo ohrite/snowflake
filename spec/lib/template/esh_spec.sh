@@ -2,7 +2,7 @@
 
 describe "template/esh"
 
-it_lets_me_embed_a_template () {
+it_lets_me_embed_a_template_with_line_breaks () {
   template_output=`esh template <<end
     I'm line one.
     Line two here

@@ -1,16 +1,23 @@
 MODULES=
 
-if [ -z "$MODULE_ROOT" ]
+if [ -z "$SNOWFLAKE_PATH" ]
 then
-  MODULE_ROOT=`cd $(dirname $0) && pwd`
+  SNOWFLAKE_PATH=`cd $(dirname $0) && pwd`/lib
 fi
 
 module () {
-  add_dependency () {
-    if [ -e "$MODULE_ROOT/$1.sh" ]
-    then
-      MODULES="$MODULES$1 "
-    fi
+  local split_snowflake_path=`echo $SNOWFLAKE_PATH | tr ":" "\n"`
+
+  resolve_dependency () {
+    for path in $split_snowflake_path
+    do
+      if [ -e "$path/$1.sh" ]
+      then
+        . "$path/$1.sh"
+        return 0
+      fi
+    done
+    return 1
   }
 
   dependency_fits () {
@@ -24,22 +31,35 @@ module () {
   }
 
   module_depends () {
-    for dependency in "$@"
+    while [ $# -gt 0 ]
     do
-      if dependency_fits $dependency
+      if dependency_fits $1
       then
-        add_dependency $dependency
+        if resolve_dependency $1
+        then
+          MODULES="$MODULES$1 "
+        fi
       fi
+      shift
     done
   }
 
   case "$1" in
+    path)
+      SNOWFLAKE_PATH="$SNOWFLAKE_PATH:$2"
+      ;;
+
     list)
       echo $MODULES
       ;;
+
     depends)
       shift
       module_depends $@
+      ;;
+
+    *)
+      return 1
       ;;
   esac
 }
