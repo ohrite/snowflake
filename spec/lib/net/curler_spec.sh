@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "core/curler"
+describe "net/curler"
 
 it_can_grab_a_file () {
   curler_output=`curler https://raw.github.com/ohrite/snowflake/master/README.md`
