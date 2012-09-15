@@ -1,3 +1,5 @@
+#!/bin/sh
+
 if [ -z "$SNOWFLAKE_PATH" ]
 then
   SNOWFLAKE_PATH=`cd $(dirname $0)/../lib && pwd`
