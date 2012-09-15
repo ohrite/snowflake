@@ -4,25 +4,40 @@ then
 fi
 
 external () {
-  SNOWFLAKE_PATH=$SNOWFLAKE_PATH:$SNOWFLAKE_CACHE
+  SNOWFLAKE_PATH="$SNOWFLAKE_PATH:$SNOWFLAKE_CACHE"
 
-  local gist_cache_path="$SNOWFLAKE_CACHE/gist"
+  extract_file () {
+    local gist_path=`tar -tf "$1" | head -n1`
 
-  mkdir -p "$gist_cache_path"
+    mkdir -p "$2"
+    cd "$2"
+    tar -zxf "$1"
+
+    if [ -n "$3" ]
+    then
+      rm -f "$3"
+      ln -s "$gist_path" "$3"
+    fi
+  }
+
+  download_and_extract () {
+    local tarball=`mktemp -t tarball`
+
+    if curler "$1" -o "$tarball" 
+    then
+      shift
+      extract_file "$tarball" $@
+      rm -f "$tarball"
+    else
+      rm -f "$tarball"
+      return 1
+    fi
+  }
 
   download_gist () {
-    local temp_gist=`mktemp -t gist`
-
-    if curler "https://gist.github.com/gists/$1/download" -o "$temp_gist"
-    then
-      local gist_path=`tar -tf "$temp_gist" | head -n1`
-      cd "$gist_cache_path"
-      tar -zxf "$temp_gist"
-      rm -f "$gist_cache_path/$1"
-      ln -s "$gist_cache_path/$gist_path" "$gist_cache_path/$1"
-    fi
-
-    rm -rf "$temp_gist"
+    download_and_extract "https://gist.github.com/gists/$1/download" \
+                         "$SNOWFLAKE_CACHE/gist" \
+                         "$SNOWFLAKE_CACHE/gist/$1"
   }
 
   case "$1" in
