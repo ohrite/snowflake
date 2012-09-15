@@ -6,3 +6,4 @@ SNOWFLAKE_PATH=`pwd`/"lib"
 . lib/net/curler.sh
 . lib/template/esh.sh
 . lib/package/apt_package.sh
+. lib/package/yum_package.sh
