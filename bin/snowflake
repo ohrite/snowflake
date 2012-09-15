@@ -1,0 +1,7 @@
+if [ -z "$SNOWFLAKE_PATH" ]
+then
+  SNOWFLAKE_PATH=`cd $(dirname $0)/../lib && pwd`
+fi
+
+. $SNOWFLAKE_PATH/module.sh
+eval $@

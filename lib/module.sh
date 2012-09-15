@@ -1,10 +1,5 @@
 MODULES=
 
-if [ -z "$SNOWFLAKE_PATH" ]
-then
-  SNOWFLAKE_PATH=`cd $(dirname $0) && pwd`/lib
-fi
-
 module () {
   local split_snowflake_path=`echo $SNOWFLAKE_PATH | tr ":" "\n"`
 
