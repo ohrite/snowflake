@@ -26,5 +26,5 @@ end
   test "$esh_inspect_output" = "\`pwd\`"
 
   esh_result_output=`esh result template_output`
-  test "$esh_result_output" = "`pwd`"
+  test "$esh_result_output" = `pwd`
 }

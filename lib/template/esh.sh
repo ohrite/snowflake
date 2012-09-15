@@ -25,9 +25,11 @@ esh () {
       shift
       create_template $@
       ;;
+
     inspect)
       inspect_template $2
       ;;
+
     result)
       template_result $2
       ;;
