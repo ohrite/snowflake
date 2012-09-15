@@ -1,0 +1,3 @@
+curler () {
+  curl -s $@
+}
