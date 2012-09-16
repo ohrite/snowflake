@@ -11,4 +11,15 @@ then
 fi
 
 . $SNOWFLAKE_PATH/module.sh
-eval $@
+
+if [ $# -eq 0 ]
+then
+  cat | (
+    while read line
+    do
+      eval $line
+    done
+  )
+else
+  eval $@
+fi
