@@ -1,4 +1,5 @@
 #!/bin/sh
+curl -s https://raw.github.com/ohrite/snowflake/master/bin/install | sh
 tail -n+`awk '/^__CLOBBER_FILE__/ {print NR + 1; exit 0; }' $0` $0 | snowflake && exit 0
 __CLOBBER_FILE__
 
