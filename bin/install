@@ -1,0 +1,78 @@
+#!/bin/sh
+
+download_tarball () {
+  echo "Fetching $1"
+
+  if [ ! -n "`which curl`" ]
+  then
+    curl -s $1 -o $2
+  else
+    if [ -n "`which wget`" ]
+    then
+      wget -q $1 -O $2
+    else
+      return 1
+    fi
+  fi
+}
+
+download_and_extract_branch () {
+  local temp_snowflake=`mktemp -t snowflake`
+
+  if download_tarball "https://nodeload.github.com/ohrite/snowflake/tarball/$1" "$temp_snowflake"
+  then
+    cd $2
+
+    local tarball_base_path=`tar tf $temp_snowflake | head -n1`
+
+    tar -zxf $temp_snowflake
+
+    echo $tarball_base_path | cut -d'-' -f3 | cut -d'/' -f1 > $2/$tarball_base_path/sha1
+    echo "Got latest SHA1 from $1: `cat $2/$tarball_base_path/sha1`"
+
+    mv $2/$tarball_base_path $2/snowflake
+  else
+    echo "ERROR: Could not download latest snowflake." >&2
+    return 1
+  fi
+}
+
+install_branch () {
+  local snowflake_extraction=`mktemp -d -t snowflake.extract`
+
+  local lib_path="$2/lib/snowflake"
+  local bin_path="$lib_path/bin/snowflake"
+
+  local installed_bin_path="$2/bin/snowflake"
+
+  if download_and_extract_branch "$1" "$snowflake_extraction"
+  then
+    local backup_path="/tmp/snowflake.old.`cat $lib_path/sha1`"
+
+    if [ -d "$lib_path" ]
+    then
+      if [ -d "$backup_path" ]
+      then
+        echo "Refusing to overwrite existing backup at $backup_path"
+        rm -rf "$lib_path"
+      else
+        echo "Backing up $lib_path to $backup_path"
+        mv "$lib_path" "$backup_path"
+      fi
+    fi
+
+    mv "$snowflake_extraction/snowflake" "$lib_path"
+
+    if [ -e "$installed_bin_path" ]
+    then
+      echo "Relinking $bin_path to $installed_bin_path"
+      rm -f "$installed_bin_path"
+    fi
+
+    ln -s "$bin_path" "$installed_bin_path"
+  fi
+
+  rm -rf $snowflake_extraction
+}
+
+install_branch "master" "/usr/local"

@@ -2,7 +2,12 @@
 
 if [ -z "$SNOWFLAKE_PATH" ]
 then
-  SNOWFLAKE_PATH=`cd $(dirname $0)/../lib && pwd`
+  SNOWFLAKE_PATH=`cd $(dirname $0)/../lib/snowflake/lib && pwd`
+
+  if [ ! -d "$SNOWFLAKE_PATH" ]
+  then
+    SNOWFLAKE_PATH=`cd $(dirname $0)/../lib && pwd`
+  fi
 fi
 
 . $SNOWFLAKE_PATH/module.sh
