@@ -9,8 +9,9 @@ but then fast-forwarded by 20 years.
 
 ### For Use
 
-   * Bash, duh.
-   * Curl, but only if you want to use the network for stuff.
+   * `bash`, duh?
+   * `curl`, but only if you want to use the network for stuff.
+   * Oh fine, I guess you can use `wget` as well.
 
 ## Note on Patches/Pull Requests
  
