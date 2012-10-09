@@ -1,6 +1,17 @@
+
+require 'benchmark'
+
+roundup = File.expand_path('../vendor/roundup/roundup.sh', __FILE__)
+runner = Proc.new do |spec_path|
+  passed = false
+  time = Benchmark.measure {
+    passed = system("#{roundup} #{spec_path}")
+  }.real.round(3)
+  n "Ran #{spec_path} in #{time}s", "Roundup", passed ? :success : :failed
+  passed
+end
+
 guard :shell do
-  roundup = File.expand_path('../vendor/roundup/roundup.sh', __FILE__)
-  watch("spec/spec_helper.sh")    { |m| system("#{roundup} spec/**/*_spec.sh"); true }
-  watch(%r{^(spec/.+_spec\.sh)$}) { |m| system("#{roundup} #{m[1]}"); true }
-  watch(%r{^lib/(.+)\.sh$})       { |m| system("#{roundup} spec/lib/#{m[1]}_spec.sh") }
+  watch(%r{^(spec/.+_spec\.sh)$}) { |m| runner.call(m[1]) }
+  watch(%r{^lib/(.+)\.sh$})       { |m| runner.call("spec/lib/#{m[1]}_spec.sh") }
 end
