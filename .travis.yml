@@ -2,6 +2,3 @@ language: ruby
 rvm:
   - 1.9.3
 script: script/ci.sh
-before_install: git submodule update --init --recursive
-gemfile:
-  - Gemfile
