@@ -7,3 +7,4 @@ SNOWFLAKE_PATH=`pwd`/"lib"
 . lib/template/esh.sh
 . lib/package/apt_package.sh
 . lib/package/yum_package.sh
+. lib/chef/directory.sh
