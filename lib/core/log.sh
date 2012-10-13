@@ -22,4 +22,5 @@ log () {
   then
     echo "[`timestamp`$trace] $priority - $@"
   fi
+  unset timestamp
 }

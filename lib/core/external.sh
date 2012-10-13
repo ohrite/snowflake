@@ -3,6 +3,8 @@ then
   SNOWFLAKE_CACHE=/tmp/snowflake/cache
 fi
 
+module depends net/curler
+
 external () {
   SNOWFLAKE_PATH="$SNOWFLAKE_PATH:$SNOWFLAKE_CACHE"
 
@@ -23,7 +25,7 @@ external () {
   download_and_extract () {
     local tarball=`mktemp -t tarball`
 
-    if curler "$1" -o "$tarball" 
+    if curler "$1" -o "$tarball"
     then
       shift
       extract_file "$tarball" $@
@@ -50,4 +52,5 @@ external () {
       return 1
       ;;
   esac
+  unset extract_file download_gist download_and_extract
 }

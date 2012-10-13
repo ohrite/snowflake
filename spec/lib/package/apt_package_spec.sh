@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "package/apt_package"
+describe_module "package/apt_package"
 
 before () {
   if [ -z "`which dpkg`" ]

@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "template/esh"
+describe_module "template/esh"
 
 it_lets_me_embed_a_template_with_line_breaks () {
   template_output=`esh template <<end

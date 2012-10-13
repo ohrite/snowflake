@@ -1,27 +1,50 @@
+module depends core/dsl core/log core/sudid
+
 directory () {
-  if [ "$2" = "do" ]
+  if [ $# -eq 1 ]
   then
-    permissions=0700
-    directory_path="$1"
-    owner=
-
-    mode () {
-      permissions="$1"
-    }
-
-    owner () {
-      owner="$1"
-    }
-
-    end () {
-      mkdir -m "$permissions" -p "$directory_path"
-      if [ -n "$owner" ]
-      then
-        chown "$owner" "$directory_path" || sudo chown "$owner" "$directory_path"
-      fi
-      unset mode end permissions directory_path owner
-    }
-  else
-    mkdir -p "$1"
+    sudid try mkdir $1
+    log debug "Executing create directory[`dsl get name`]"
+    return 0
   fi
+
+  dsl setters "owner" "mode" "recursive" "action" "path" "name"
+  path "$1"
+  name "$1"
+  shift
+
+  end () {
+    if [ "`dsl get action`" = "delete" ]
+    then
+      if [ -n "`dsl get recursive`" -a "`dsl get recursive`" = "true" ]
+      then
+        sudid try rm -rf `dsl get path`
+      else
+        sudid try rmdir `dsl get path`
+      fi
+    else
+      local options
+
+      if [ -n "`dsl get recursive`" -a "`dsl get recursive`" = "true" ]
+      then
+        options="-p"
+      fi
+
+      if [ -n "`dsl get mode`" ]
+      then
+        options="$options -m `dsl get mode`"
+      fi
+
+      sudid try mkdir $options `dsl get path`
+
+      if [ -n "`dsl get owner`" ]
+      then
+        sudid try chown `dsl get owner` `dsl get path`
+      fi
+
+      log debug "Executing create directory[`dsl get name`]"
+    fi
+
+    dsl clear
+  }
 }

@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "package/yum_package"
+describe_module "package/yum_package"
 
 before () {
   if [ -z "`which yum`" ]

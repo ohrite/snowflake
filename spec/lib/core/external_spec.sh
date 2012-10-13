@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "core/external"
+describe_module "core/external"
 
 before () {
   SNOWFLAKE_CACHE=`mktemp -d -t cache`

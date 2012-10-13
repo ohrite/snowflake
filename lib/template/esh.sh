@@ -34,4 +34,5 @@ esh () {
       template_result $2
       ;;
   esac
+  unset create_template inspect_template template_result
 }

@@ -4,10 +4,17 @@ describe "module"
 
 before () {
   temporary_directory=`mktemp -d -t module`
+  write_declares "$temporary_directory/.before"
+  source lib/module.sh
 }
 
 after () {
   rm -rf $temporary_directory
+}
+
+it_does_not_pollute () {
+  write_declares "$temporary_directory/.after"
+  diff "$temporary_directory/.before" "$temporary_directory/.after"
 }
 
 it_has_no_modules_when_starting () {

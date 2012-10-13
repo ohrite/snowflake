@@ -1,6 +1,6 @@
 . spec/spec_helper.sh
 
-describe "core/log"
+describe_module "core/log"
 
 it_logs_a_message_with_a_timestamp () {
   log_output=`log 'various meats'`
