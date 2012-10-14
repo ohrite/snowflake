@@ -1,1 +1,1 @@
-rvm --create 1.9.3@snowflake
+rvm --create 1.9.3-p286@snowflake
