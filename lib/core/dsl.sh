@@ -1,4 +1,20 @@
 dsl () {
+  arguments () {
+    local setter=$1
+    shift
+
+    while [ $# -gt 0 ]
+    do
+      if [ $# -eq 1 -a "$1" = "do" ]
+      then
+        return 1
+      fi
+
+      eval "dsl_variable_$setter=\"\${dsl_variable_$setter}$1 \""
+      shift
+    done
+  }
+
   setters () {
     for field in $@
     do
@@ -31,6 +47,14 @@ dsl () {
     clear)
       clear
       ;;
+    arguments)
+      shift
+      if ! arguments $@
+      then
+        unset setters get clear arguments
+        return 1
+      fi
+      ;;
   esac
-  unset setters get clear
+  unset setters get clear arguments
 }
